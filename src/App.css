@@ -7,6 +7,10 @@
   pointer-events: none;
 }
 
+.Header-user-name {
+  margin: 4px 32px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -24,7 +28,7 @@
   color: white;
 }
 
-.App-link {
+​ .App-link {
   color: #61dafb;
 }
 
