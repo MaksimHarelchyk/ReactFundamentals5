@@ -4,19 +4,17 @@ import FormControl from "react-bootstrap/FormControl";
 import "./ManagementTab.css";
 const placeholderText = "Enter course name...";
 
-// function handleClick() {
-//   console.log("click");
-// }
-
-function ManagementTab({ saveInputText, performSearch }) {
+function ManagementTab({ saveInputText, performSearch, handlePage }) {
   function handleInput(e) {
-    console.log("handleInput", e.target.value);
     saveInputText(e.target.value);
   }
 
   function handleSearch() {
-    console.log("handleSearch");
     performSearch();
+  }
+
+  function handleAddNewCourse() {
+    handlePage("CreateCourse");
   }
 
   return (
@@ -39,7 +37,11 @@ function ManagementTab({ saveInputText, performSearch }) {
         </InputGroup>
       </div>
       <div className="right">
-        <Button variant="outline-primary" id="button-addon2">
+        <Button
+          variant="outline-primary"
+          id="button-addon2"
+          onClick={handleAddNewCourse}
+        >
           Add new course
         </Button>
       </div>

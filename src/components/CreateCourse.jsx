@@ -1,8 +1,4 @@
-import ManagementTab from "./ManagementTab.jsx";
-import CourseCard from "./CourseCard.jsx";
 import Form from "react-bootstrap/Form";
-import mockedCoursesList from "./mockedCoursesList.js";
-import mockedAuthorsList from "./mockedAuthorsList.js";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import FormControl from "react-bootstrap/FormControl";
@@ -10,8 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
 
-function CreateCourse() {
-  const [authors, setAuthors] = useState(mockedAuthorsList);
+function CreateCourse({
+  handlePage,
+  mockedAuthors,
+  setMockedAuthors,
+  addCourse,
+}) {
   const [newAuthorName, saveNewAuthorName] = useState("");
   const [selectedAuthorIds, setSelectedAuthors] = useState([]);
   const [title, setTitle] = useState("");
@@ -19,21 +19,17 @@ function CreateCourse() {
   const [duration, setDuration] = useState("");
 
   function handleNewAuthorNameInput(e) {
-    console.log("handleNewAuthorNameInput", e.target.value);
     saveNewAuthorName(e.target.value);
   }
 
   function handleSaveAuthor(e) {
-    console.log("handleSaveAuthor", e.target.value);
-    setAuthors((authors) => [
+    setMockedAuthors((authors) => [
       ...authors,
       { id: uuidv4(), name: newAuthorName },
     ]);
   }
 
   function handleCheckbox(event) {
-    console.log();
-    console.log(event.target.name);
     if (event.target.checked) {
       setSelectedAuthors((selectedAuthorIds) => [
         ...selectedAuthorIds,
@@ -44,7 +40,33 @@ function CreateCourse() {
         selectedAuthorIds.filter((item) => item !== event.target.name)
       );
     }
-    console.log("selectedAuthorIds", selectedAuthorIds);
+  }
+
+  function saveCourse() {
+    console.log(title, description, selectedAuthorIds, duration);
+    if (
+      !title ||
+      !description ||
+      !selectedAuthorIds ||
+      !duration ||
+      selectedAuthorIds.length === 0
+    ) {
+      alert("Fill neccesary fields");
+    } else {
+      addCourse({
+        id: uuidv4(),
+        title: title,
+        description: description,
+        authors: selectedAuthorIds,
+        duration: duration,
+        creationDate: new Date().toLocaleDateString("en-US"),
+      });
+      handlePage("Courses");
+    }
+  }
+
+  function cancel() {
+    handlePage("Courses");
   }
 
   return (
@@ -79,7 +101,7 @@ function CreateCourse() {
               {selectedAuthorIds
                 .map(
                   (authorId) =>
-                    authors.find((mockedAuthor) => {
+                    mockedAuthors.find((mockedAuthor) => {
                       return mockedAuthor.id === authorId;
                     }).name
                 )
@@ -87,7 +109,7 @@ function CreateCourse() {
             </p>
           </div>
           <div>
-            {authors.map((author) => (
+            {mockedAuthors.map((author) => (
               <Form.Check
                 id={author.id}
                 name={author.id}
@@ -123,8 +145,12 @@ function CreateCourse() {
             />
           </Form.Group>
         </Form>
-        <Button variant="outline-success">Save</Button>
-        <Button variant="outline-warning">Cancel</Button>
+        <Button variant="outline-success" onClick={saveCourse}>
+          Save
+        </Button>
+        <Button variant="outline-warning" onClick={cancel}>
+          Cancel
+        </Button>
       </Card.Body>
     </Card>
   );

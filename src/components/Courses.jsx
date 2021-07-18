@@ -1,16 +1,14 @@
 import ManagementTab from "./ManagementTab.jsx";
 import CourseCard from "./CourseCard.jsx";
-import mockedCoursesList from "./mockedCoursesList.js";
-import mockedAuthorsList from "./mockedAuthorsList.js";
+import Card from "react-bootstrap/Card";
+
 import React, { useState } from "react";
 
-function Courses() {
+function Courses({ handlePage, mockedCourses, mockedAuthors }) {
   const [textToFind, setTextToFind] = useState("");
-  const [courses, setCourses] = useState(mockedCoursesList);
+  const [courses, setCourses] = useState(mockedCourses);
 
   const saveInputText = (text) => {
-    console.log("saveInputText");
-    console.log(text);
     if (text === "") {
       LoadAllCourses();
     }
@@ -18,34 +16,35 @@ function Courses() {
   };
 
   const performSearch = () => {
-    console.log("performSearch with");
-    console.log(textToFind);
     if (textToFind !== "") {
-      let foundCourses = mockedCoursesList.filter(
+      let foundCourses = mockedCourses.filter(
         ({ title }) => title.toUpperCase() === textToFind.toUpperCase()
       );
-      console.log("found", foundCourses);
       setCourses(foundCourses);
     }
   };
 
   function LoadAllCourses() {
-    console.log("LoadAllCourses");
-    setCourses(mockedCoursesList);
+    setCourses(mockedCourses);
   }
+
+  const goToNewPage = (page) => {
+    handlePage(page);
+  };
 
   return (
     <div>
       <ManagementTab
         saveInputText={saveInputText}
         performSearch={performSearch}
+        handlePage={goToNewPage}
       />
       {courses && courses.length !== 0 ? (
         courses.map((value, index) => {
           if (typeof value.authorNames === "undefined") {
             value.authorNames = value.authors.map(
               (authorId) =>
-                mockedAuthorsList.find((mockedAuthor) => {
+                mockedAuthors.find((mockedAuthor) => {
                   return mockedAuthor.id === authorId;
                 }).name
             );
@@ -53,7 +52,11 @@ function Courses() {
           return <CourseCard key={index} course={value} />;
         })
       ) : (
-        <p>No courses found</p>
+        <Card>
+          <Card.Body>
+            <Card.Title>No courses found</Card.Title>
+          </Card.Body>
+        </Card>
       )}
     </div>
   );
